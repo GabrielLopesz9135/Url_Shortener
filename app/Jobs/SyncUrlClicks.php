@@ -25,7 +25,6 @@ class SyncUrlClicks implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('Executando job de sincronização de cliques...');
         $keys = Redis::keys('clicks:*');
 
         foreach ($keys as $key) {

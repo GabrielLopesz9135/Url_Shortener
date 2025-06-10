@@ -49,7 +49,6 @@ class UrlService {
         }
 
         Redis::setex($short_code, 84600, $originalUrl);
-        // event(new UrlVisited($short_code));
         Redis::incr("clicks:{$short_code}");
 
         return $originalUrl;

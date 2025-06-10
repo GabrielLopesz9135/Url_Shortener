@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BenchmarkController;
 use App\Http\Controllers\UrlController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,4 +16,5 @@ Route::prefix('urls')->group(function () {
 
 Route::get('/{shortCode}', [UrlController::class, 'redirect'])->name('urls.redirect');
 
-
+Route::get('/redisBenchmark/{shortCode}', [BenchmarkController::class, 'redisBenchmark'])->name('urls.redisBenchmark');
+Route::get('/directBenchmark/{shortCode}', [BenchmarkController::class, 'directBenchmark'])->name('urls.directBenchmark');
