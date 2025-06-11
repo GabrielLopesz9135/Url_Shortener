@@ -8,13 +8,20 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::prefix('urls')->group(function () {
-    Route::get('/', [UrlController::class, 'index'])->name('urls.index');
-    Route::middleware('throttle:10,1')->post('/', [UrlController::class, 'shortener'])->name('urls.shortener');
-    Route::get('/stats/{short_code}', [UrlController::class, 'stats'])->name('urls.stats');
-});
+/* Route::get('/', [UrlController::class, 'index'])->name('urls.home'); */
 
-Route::get('/{shortCode}', [UrlController::class, 'redirect'])->name('urls.redirect');
+Route::get('/', function () {
+    return view('urls.home');
+})->name('home');
 
-Route::get('/redisBenchmark/{shortCode}', [BenchmarkController::class, 'redisBenchmark'])->name('urls.redisBenchmark');
-Route::get('/directBenchmark/{shortCode}', [BenchmarkController::class, 'directBenchmark'])->name('urls.directBenchmark');
+Route::get('/api-docs', function () {
+    return view('api-docs');
+})->name('api_docs');
+
+Route::get('/benchmark', function () {
+    return view('benchmark');
+})->name('benchmark');
+
+Route::get('/technologies', function () {
+    return view('technologies');
+})->name('technologies');

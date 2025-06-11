@@ -8,6 +8,7 @@
         "php": "^8.2",
         "jenssegers/mongodb": "^5.4",
         "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "predis/predis": "^3.0"
     },
