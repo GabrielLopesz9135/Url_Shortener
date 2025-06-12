@@ -294,7 +294,8 @@
                     <div class="url-input-group">
                         <input type="url" 
                                class="form-control url-input" 
-                               id="longUrl" 
+                               id="longUrl"
+                               name="original_url"
                                placeholder="https://exemplo.com/minha-url-muito-longa"
                                required>
                     </div>
@@ -308,7 +309,7 @@
 
                 <!-- Result Section -->
                 <div class="result-section" id="resultSection">
-                    <h5><i class="fas fa-check-circle text-success"></i> URL Encurtada com Sucesso!</h5>
+                    <h5 style="color: black;"><i class="fas fa-check-circle text-success"></i> URL Encurtada com Sucesso!</h5>
                     <div class="shortened-url" id="shortenedUrl"></div>
                     <div class="d-flex gap-2 flex-wrap">
                         <button class="btn copy-btn" onclick="copyToClipboard()">
@@ -352,7 +353,7 @@
                         </div>
                         <h4 class="feature-title">Analytics Detalhados</h4>
                         <p class="feature-description">
-                            Monitore cliques, localizações e dispositivos com 
+                            Monitore cliques com 
                             relatórios completos e em tempo real.
                         </p>
                     </div>
@@ -405,21 +406,31 @@
             document.getElementById('alertSection').innerHTML = '';
             
             try {
-                // Simulate API call (replace with actual API endpoint)
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Mock response (replace with actual API call)
-                const response = {
-                    success: true,
-                    shortUrl: 'https://urlshort.dev/' + generateShortCode(),
-                    originalUrl: longUrl,
-                    clicks: 0,
-                    createdAt: new Date().toISOString()
-                };
-                
-                if (response.success) {
-                    shortenedUrlData = response;
-                    document.getElementById('shortenedUrl').textContent = response.shortUrl;
+                 const response = await fetch('http://localhost/api/url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        original_url: longUrl
+                    })
+                });
+
+                const json = await response.json();
+
+                if (response.ok && json.status === 200) {
+                    const shortUrl = json.data.short_url;
+
+                    const result = {
+                        success: true,
+                        shortUrl: shortUrl,
+                    };
+
+                    shortenedUrlData = result;
+                    console.log(shortenedUrlData.shortUrl);
+
+                    document.getElementById('shortenedUrl').textContent = shortUrl;
                     document.getElementById('resultSection').style.display = 'block';
                     
                     // Scroll to result
@@ -427,8 +438,8 @@
                         behavior: 'smooth', 
                         block: 'center' 
                     });
-                } else {
-                    showAlert('Erro ao encurtar URL. Tente novamente.', 'danger');
+                }else {
+                    showAlert('Erro ao encurtar URL. Tente novamente em Alguns Instantes.', 'danger');
                 }
                 
             } catch (error) {
@@ -441,16 +452,6 @@
                 submitBtn.disabled = false;
             }
         });
-
-        // Generate random short code (for demo purposes)
-        function generateShortCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
 
         // Copy to clipboard function
         async function copyToClipboard() {
@@ -483,6 +484,11 @@
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('alertSection').innerHTML = '';
             shortenedUrlData = null;
+
+            document.getElementById('shortenForm').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+            });
         }
 
         // Show alert function

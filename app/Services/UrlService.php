@@ -30,7 +30,7 @@ class UrlService {
             'short_code' => $shortCode,
             'clicks' => 0,
             'created_at' => now(),
-            'expire_at' => Carbon::now()->addDay(1),
+            'expire_at' => Carbon::now()->addDay(7),
         ];
 
         return $this->urlRepository->shortener($data);
@@ -42,28 +42,32 @@ class UrlService {
 
         if (!$originalUrl) {
             $url = $this->urlRepository->redirect($short_code);
-            if (!$url) {
-                abort(404, 'Short URL not found');
+            if ($url) {
+                $originalUrl = $url->original_url;
+                Redis::setex($short_code, 84600, $originalUrl);
+                Redis::incr("clicks:{$short_code}");
+            }else{
+                $originalUrl = null;
             }
-            $originalUrl = $url->original_url;
         }
-
-        Redis::setex($short_code, 84600, $originalUrl);
-        Redis::incr("clicks:{$short_code}");
 
         return $originalUrl;
     }
 
     public function stats($short_code)
     {
-        $url = $this->urlRepository->stats($short_code);
-        $stats = [
-            'original_url' => $url->original_url,
-            'short_code' => $url->short_code,
-            'clicks' => $url->clicks,
-            'created_at' => $url->created_at,
-        ];
+        $stats = $this->urlRepository->stats($short_code);
 
+        if($stats){
+            $stats = [
+                'original_url' => $stats->original_url,
+                'short_code' => $stats->short_code,
+                'clicks' => $stats->clicks,
+                'created_at' => $stats->created_at,
+                'expire_at' => $stats->expire_at,
+            ];
+        }
+        
         return $stats;
     }
 }

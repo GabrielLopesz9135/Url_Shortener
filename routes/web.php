@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-/* Route::get('/', [UrlController::class, 'index'])->name('urls.home'); */
-
 Route::get('/', function () {
     return view('urls.home');
 })->name('home');
@@ -25,3 +23,7 @@ Route::get('/benchmark', function () {
 Route::get('/technologies', function () {
     return view('technologies');
 })->name('technologies');
+
+
+//API Routes
+

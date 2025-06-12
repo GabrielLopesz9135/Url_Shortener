@@ -16,7 +16,6 @@ class UrlRepositoryEloquent implements UrlRepositoryInterface
     public function shortener($data)
     {
         Url::create($data);
-        
         return $data['short_code'];
     }
 
@@ -28,7 +27,7 @@ class UrlRepositoryEloquent implements UrlRepositoryInterface
 
     public function stats($short_code)
     {
-        $url = Url::where('short_code', $short_code)->firstOrFail();
+        $url = Url::where('short_code', $short_code)->first();
         return $url;
     }
 
