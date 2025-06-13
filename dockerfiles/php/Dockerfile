@@ -1,9 +1,10 @@
 FROM php:8.3-fpm-alpine3.19
 
-# Instala dependências do sistema e do MongoDB
+# Instala dependências do sistema, Git e MongoDB
 RUN apk add --no-cache \
     bash \
     curl \
+    git \ 
     libpng-dev \
     libzip-dev \
     zlib-dev \
@@ -19,6 +20,7 @@ RUN docker-php-ext-install gd zip
 
 # Copia o Composer mais recente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer config --global github-protocols https
 
 # Instala Node e NPM
 RUN apk add --no-cache nodejs npm
@@ -27,3 +29,4 @@ RUN apk add --no-cache nodejs npm
 WORKDIR /var/www
 
 EXPOSE 9000
+

@@ -20,7 +20,7 @@ class UrlService {
     public function shortener($originalUrl)
     {
         do {
-        $shortCode = Str::random(9);
+        $shortCode = Str::random(6);
         } while ($this->urlRepository->shortCodeExists($shortCode));
 
         Redis::setex($shortCode, 84600, $originalUrl);
@@ -32,7 +32,7 @@ class UrlService {
             'created_at' => now(),
             'expire_at' => Carbon::now()->addDay(7),
         ];
-
+        
         return $this->urlRepository->shortener($data);
     }
 

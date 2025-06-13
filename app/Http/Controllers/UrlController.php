@@ -30,6 +30,7 @@ class UrlController extends Controller
                 'data' => ['short_url' => url("api/$shortCode")],
                 'message' => 'URL encurtada com sucesso',
             ]);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
