@@ -251,7 +251,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#"><i class="fas fa-link"></i> URLShort</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -259,7 +259,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                    <li class="nav-item ">
                         <a class="nav-link active" href="{{route('home')}}">Home</a>
                     </li>
                     <li class="nav-item">
@@ -271,6 +271,41 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('technologies')}}">Benchmark</a>
                     </li>
+                    @auth
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                {{-- Link para o Perfil --}}
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pages.user.profile') }}">
+                                        Perfil
+                                    </a>
+                                </li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+
+                                {{-- Formulário de Logout --}}
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                                            Sair
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">Registrar</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </div>

@@ -371,6 +371,41 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{{route('benchmark')}}">Benchmark</a>
                     </li>
+                    @auth
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                {{-- Link para o Perfil --}}
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pages.user.profile') }}">
+                                        Perfil
+                                    </a>
+                                </li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+
+                                {{-- Formulário de Logout --}}
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                                            Sair
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">Registrar</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </div>
