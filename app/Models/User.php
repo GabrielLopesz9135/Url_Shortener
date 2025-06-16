@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Auth\User as Authenticatable;
+use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'api_key',
+        'email_verified_at',
     ];
 
     /**
@@ -53,6 +54,16 @@ class User extends Authenticatable
 
         static::creating(function ($user) {
             $user->api_key = bin2hex(random_bytes(32));
+
+            $freePlan = Plan::where('name', 'Gratuito')->first();
+            if ($freePlan) {
+                $user->plan_id = $freePlan->_id;
+            }
         });
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class, 'plan_id');
     }
 }

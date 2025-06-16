@@ -25,6 +25,8 @@ RUN composer config --global github-protocols https
 # Instala Node e NPM
 RUN apk add --no-cache nodejs npm
 
+RUN npm config set cache /tmp/npm-cache --global
+
 # Define o diretório de trabalho
 WORKDIR /var/www
 

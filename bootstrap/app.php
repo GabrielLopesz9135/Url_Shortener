@@ -12,7 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'ValidateApiHeaders' => \App\Http\Middleware\ValidateApiHeaders::class,
+            'RateLimitPlan' => \App\Http\Middleware\RateLimitByPlan::class,
+        ]);
+
+        // Agrupamento dos middlewares no grupo 'api'
+        $middleware->group('api', [
+            'ValidateApiHeaders',
+            'RateLimitPlan',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
