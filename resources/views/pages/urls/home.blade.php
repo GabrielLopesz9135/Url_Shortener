@@ -266,10 +266,10 @@
                         <a class="nav-link" href="{{route('api_docs')}}">API</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('benchmark')}}">Tecnologias</a>
+                        <a class="nav-link" href="{{route('technologies')}}">Tecnologias</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('technologies')}}">Benchmark</a>
+                        <a class="nav-link" href="{{route('benchmark')}}">Benchmark</a>
                     </li>
                     @auth
                         <li class="nav-item dropdown">
@@ -445,7 +445,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer 94b92fd7864bb3adf6213d2a4e09602412d3e34e8dd1a52c5df302b6e144029c',
                     },
                     body: JSON.stringify({
                         original_url: longUrl

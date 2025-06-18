@@ -20,14 +20,14 @@ class UrlController extends Controller
     {
         try {
             $request->validate([
-                'original_url' => 'required|url',
+                'original_url' => 'required',
             ]);
 
             $shortCode = $this->service->shortener($request->input('original_url'));
 
             return response()->json([
                 'status' => 200,
-                'data' => ['short_url' => url("api/$shortCode")],
+                'data' => ['short_url' => url("short/$shortCode")],
                 'message' => 'URL encurtada com sucesso',
             ]);
             
@@ -52,7 +52,12 @@ class UrlController extends Controller
                 'message' => 'URL não encontrada',
             ], 404);
         }
-        return redirect()->to($originalUrl);
+
+        if (!preg_match('#^https?://#', $originalUrl)) {
+            $originalUrl = 'http://' . $originalUrl;
+        }
+        
+        return redirect()->away($originalUrl);
     }
 
     public function stats($short_code)

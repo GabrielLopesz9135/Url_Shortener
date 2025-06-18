@@ -3,25 +3,40 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use App\Services\VerifyEmailService;
+use Illuminate\Support\Facades\Log;
 
 class VerifyEmailController extends Controller
 {
-    /**
-     * Mark the authenticated user's email address as verified.
-     */
-    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    private $service;
+    public function __construct(VerifyEmailService $service)
     {
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
-        }
+        $this->service = $service;
+    }
 
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
-        }
+    public function index()
+    {
+        return view('pages.user.email-verification', ['status' => false]);
+    }
 
-        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+    public function verifyEmail(Request $request)
+    {
+        $result = $this->service->verifyEmail($request->input('email'));
+        return view('pages.user.email-verification', ['status' => true]);
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $result = $this->service->sendEmail($request->input('email'));
+        
+        if (!$result) {
+            return response()->json([
+                'message' => 'Erro ao enviar o e-mail.'
+            ])->setStatusCode(500);
+        }
+        return response()->json([
+            'message' => 'E-mail enviado com sucesso!'
+        ])->setStatusCode(200);
     }
 }

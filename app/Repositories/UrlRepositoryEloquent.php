@@ -15,25 +15,25 @@ class UrlRepositoryEloquent implements UrlRepositoryInterface
 
     public function shortener($data)
     {
-        Url::create($data);
+        $this->model->create($data);
         return $data['short_code'];
     }
 
     public function redirect($short_code)
     {
-        $url = Url::where('short_code', $short_code)->first();
+        $url = $this->model->where('short_code', $short_code)->first();
         return $url;
     }
 
     public function stats($short_code)
     {
-        $url = Url::where('short_code', $short_code)->first();
+        $url = $this->model->where('short_code', $short_code)->first();
         return $url;
     }
 
     public function shortCodeExists(string $shortCode): bool 
     {
-        return Url::on('mongodb')->where('short_code', $shortCode)->exists();
+        return $this->model->on('mongodb')->where('short_code', $shortCode)->exists();
     }
 
 

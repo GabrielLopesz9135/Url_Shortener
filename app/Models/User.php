@@ -66,4 +66,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Plan::class, 'plan_id');
     }
+
+    public function markEmailAsVerified()
+    {
+        $this->email_verified_at = now();
+        return $this->save();
+    }
+
 }
