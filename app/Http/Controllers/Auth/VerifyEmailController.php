@@ -15,15 +15,16 @@ class VerifyEmailController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('pages.user.email-verification', ['status' => false]);
+        $result = $this->service->index($request->input('email'));
+        return view('pages.user.email-verification', ['status' => $result['status'], 'message' => $result['message']]);
     }
 
     public function verifyEmail(Request $request)
     {
-        $result = $this->service->verifyEmail($request->input('email'));
-        return view('pages.user.email-verification', ['status' => true]);
+        $result = $this->service->verifyEmail($request);
+        return view('pages.user.email-verification', ['status' => $result['status'], 'message' => $result['message']]);
     }
 
     public function sendEmail(Request $request)

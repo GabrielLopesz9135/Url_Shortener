@@ -354,13 +354,9 @@
         <!-- Header -->
         <div class="email-header">
             <div class="logo">
-                <i class="fas fa-link"></i>{{ config('app.name', 'LinkApp') }}
+                <i class="fas fa-link"></i>URLShort
             </div>
             <div class="header-subtitle">Redefinição de Senha</div>
-            
-            <div class="main-icon">
-                <i class="fas fa-key"></i>
-            </div>
         </div>
 
         <!-- Conteúdo Principal -->
@@ -368,14 +364,14 @@
             <h1 class="email-title">Redefinir sua Senha</h1>
             
             <p class="email-message">
-                Olá <strong>{{ $user->name ?? 'Usuário' }}</strong>!<br><br>
+                Olá <strong>{{ $name ?? 'Usuário' }}</strong>!<br><br>
                 Recebemos uma solicitação para redefinir a senha da sua conta associada ao e-mail 
-                <span class="user-email">{{ $user->email ?? 'seu@email.com' }}</span>. 
+                <span class="user-email">{{ $user ?? 'seu@email.com' }}</span>. 
                 Se você fez esta solicitação, clique no botão abaixo para criar uma nova senha.
             </p>
 
             <!-- Botão Principal -->
-            <a href="{{ $resetUrl ?? '#' }}" class="reset-button">
+            <a href="{{ $link ?? '#' }}" class="reset-button">
                 <i class="fas fa-lock" style="margin-right: 8px;"></i>
                 Redefinir Senha
             </a>
@@ -396,7 +392,7 @@
             <div class="alternative-link">
                 <strong>Problemas com o botão?</strong><br>
                 Copie e cole este link no seu navegador:<br>
-                <a href="{{ $resetUrl ?? '#' }}">{{ $resetUrl ?? 'https://exemplo.com/reset' }}</a>
+                <a href="{{ $link?? '#' }}">{{ $link ?? 'https://exemplo.com/verify' }}</a>
             </div>
 
             <!-- Informações de Segurança -->
@@ -420,14 +416,9 @@
 
         <!-- Footer -->
         <div class="email-footer">
-            <div class="footer-links">
-                <a href="{{ config('app.url') }}">Página Inicial</a>
-                <a href="{{ config('app.url') }}/support">Suporte</a>
-                <a href="{{ config('app.url') }}/security">Segurança</a>
-            </div>
             
             <div class="footer-text">
-                <strong>{{ config('app.name', 'LinkApp') }}</strong><br>
+                <strong>URLShort</strong><br>
                 Este e-mail foi enviado automaticamente. Por favor, não responda a esta mensagem.<br>
                 Se você tem dúvidas sobre segurança, entre em contato conosco imediatamente.
             </div>

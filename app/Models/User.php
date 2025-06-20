@@ -5,10 +5,11 @@ namespace App\Models;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, CanResetPassword;
 
     protected $collection = 'users';
 
@@ -67,10 +68,15 @@ class User extends Authenticatable
         return $this->belongsTo(Plan::class, 'plan_id');
     }
 
-    public function markEmailAsVerified()
+    public function markEmailAsVerified(): bool
     {
         $this->email_verified_at = now();
         return $this->save();
     }
+
+    public function hasVerifiedEmail(): bool
+{
+    return !is_null($this->email_verified_at);
+}
 
 }

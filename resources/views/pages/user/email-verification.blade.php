@@ -484,8 +484,7 @@
                         <!-- Action Buttons -->
                         <div class="action-buttons mx-auto">
                                 <button type="submit" class="btn btn-resend" id="resendBtn">
-                                    <i class="fas fa-paper-plane me-2"></i>
-                                    Reenviar E-mail
+                                    <i class="fas fa-paper-plane me-2"></i> Reenviar E-mail
                                 </button>
                         </div>
 
@@ -552,14 +551,8 @@
             }, 1000);
         }
 
-        // Handle resend button click
-        document.getElementById('resendBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Add loading state
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
-            this.disabled = true;
+        function sendEmailVerification() {
+            let button = document.getElementById('resendBtn')
             let email = document.getElementById('userEmail').textContent
             let Authorization = "Bearer {{ Auth::user()->api_key }}";
             
@@ -575,13 +568,21 @@
                 })
             })
             .then(data => {
-                this.innerHTML = originalText;
+                button.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Reenviar E-mail';
                 showSuccessMessage(); 
                 startCountdown();     
             })
             .finally(() => {
-                this.disabled = false;
+                button.disabled = false;
             });
+        }
+
+        // Handle resend button click
+        document.getElementById('resendBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+            this.disabled = true;
+            sendEmailVerification();
         });
 
         // Show success message after resend
@@ -609,20 +610,20 @@
         // Check verification status periodically
        function checkVerificationStatus() {
 
+            const statusDiv = document.getElementById('verificationStatus');
+            const statusIcon = document.getElementById('statusIcon');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+            const helpsection = document.getElementById('help-section');
+            const verificationsteps = document.getElementById('verification-steps');
+
             const status = '{{ $status }}';
-            console.log(status);
-             if(status){
-                const statusDiv = document.getElementById('verificationStatus');
-                const statusIcon = document.getElementById('statusIcon');
-                const statusTitle = document.getElementById('statusTitle');
-                const statusMessage = document.getElementById('statusMessage');
-                const helpsection = document.getElementById('help-section');
-                const verificationsteps = document.getElementById('verification-steps');
-                
+
+             if(status == true){
                 statusDiv.className = 'verification-status';
                 statusIcon.className = 'fas fa-check-circle status-icon success';
                 statusTitle.textContent = 'E-mail Verificado!';
-                statusMessage.innerHTML = 'Seu e-mail foi verificado com sucesso. Você já pode acessar todos os recursos da plataforma.';
+                statusMessage.innerHTML = '{{ $message }} Você já pode acessar todos os recursos da plataforma.';
                 helpsection.className = 'd-none';
                 verificationsteps.className = 'd-none';
                 
@@ -638,12 +639,24 @@
                     </a>
                 `;
              }
+             if(status == false){
+                statusDiv.className = 'verification-status error';
+                statusIcon.className = 'fas fa-circle-xmark status-icon error';
+                statusTitle.textContent = 'E-mail Não Verificado!';
+                statusMessage.innerHTML = '{{ $message }} Tente Novamente em Alguns Instantes.';
+             }
+
+             return status;
         } 
 
         // Start countdown on page load
         document.addEventListener('DOMContentLoaded', function() {
             startCountdown();
-            checkVerificationStatus();
+            let status = checkVerificationStatus();
+
+            if(status != true){
+                sendEmailVerification();
+            }
             
             // Add smooth animations
             const verifyContainer = document.querySelector('.verify-container');
@@ -655,7 +668,7 @@
                 verifyContainer.style.opacity = '1';
                 verifyContainer.style.transform = 'translateY(0)';
             }, 100);
-        });
+        }); 
 
     </script>
 </body>

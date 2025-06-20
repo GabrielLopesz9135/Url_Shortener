@@ -16,11 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'ValidateApiHeaders' => \App\Http\Middleware\ValidateApiHeaders::class,
             'RateLimitPlan' => \App\Http\Middleware\RateLimitByPlan::class,
         ]);
-        $middleware->group('api', [
+        $middleware->group('apiValidate', [
             'ValidateApiHeaders',
             'RateLimitPlan',
         ]);
-        /* $middleware->append(\App\Http\Middleware\VerifyEmail::class); */
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -240,6 +240,7 @@
             margin-right: 8px;
         }
 
+
         .success-message {
             background: rgba(56, 161, 105, 0.1);
             border: 1px solid var(--accent-green);
@@ -262,6 +263,33 @@
         }
 
         .success-message p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: rgba(229, 62, 62, 0.1);
+            border-color: #e53e3e;
+            border: 1px solid #e53e3e;
+            color: #e53e3e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .error-message i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .error-message h4 {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .error-message p {
             margin: 0;
             font-size: 0.9rem;
         }
@@ -348,7 +376,7 @@
                     <!-- Reset Panel -->
                     <div class="reset-panel">
                         <div class="brand-logo">
-                            <h1><i class="fas fa-link" style="color: var(--accent-green);"></i> {{ config('app.name', 'LinkApp') }}</h1>
+                            <h1><i class="fas fa-link" style="color: var(--accent-green);"></i> URLShort</h1>
                             <p>Recuperação de senha</p>
                         </div>
 
@@ -364,17 +392,42 @@
                                 </ol>
                             </div>
 
-                            @if (session('status'))
+                            <!-- SUCESS MESSAGE -->
+                            <div id="successMessage" class="d-none">
                                 <div class="success-message">
                                     <i class="fas fa-check-circle"></i>
                                     <h4>Email enviado com sucesso!</h4>
-                                    <p>{{ session('status') }}</p>
+                                    <p>Enviamos um link de recuperação para <span class="email-highlight" id="sentEmail"></span></p>
+                                    <p style="margin-top: 10px; font-size: 0.85rem;">
+                                        Verifique sua caixa de entrada e spam. O link expira em 60 minutos.
+                                    </p>
                                 </div>
-                            @endif
+
+                                <div class="reset-steps">
+                                    <h4><i class="fas fa-clock" style="color: var(--accent-yellow); margin-right: 8px;"></i>Próximos passos:</h4>
+                                    <ol>
+                                        <li>Abra seu email e procure nossa mensagem</li>
+                                        <li>Clique no botão "Redefinir Senha"</li>
+                                        <li>Crie uma nova senha segura</li>
+                                        <li>Faça login com suas novas credenciais</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                        <!-- FAIL MESSAGE -->
+                            <div id="ErrorMessage" class="d-none">
+                            <div class="error-message">
+                                <i class="fas fa-check-circle"></i>
+                                <h4 >Erro ao enviar o e-mail</h4>
+                                <p id="errorFeedBack" style="margin-top: 10px; font-size: 0.85rem;">
+                                    Tente Novamente em alguns instantes!
+                                </p>
+                            </div>
+                        </div>
 
                             <form method="POST" action="{{ route('password.email') }}" id="passwordResetForm">
                                 @csrf
-                                
+                                @method('POST')
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" 
@@ -386,11 +439,7 @@
                                            autocomplete="email" 
                                            autofocus
                                            placeholder="Digite seu email cadastrado">
-                                    @error('email')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
+                                    
                                 </div>
 
                                 <button type="submit" class="btn btn-reset">
@@ -401,31 +450,7 @@
                         </div>
 
                         <!-- Success Message (Hidden by default) -->
-                        <div id="successMessage" class="hidden">
-                            <div class="success-message">
-                                <i class="fas fa-check-circle"></i>
-                                <h4>Email enviado com sucesso!</h4>
-                                <p>Enviamos um link de recuperação para <span class="email-highlight" id="sentEmail"></span></p>
-                                <p style="margin-top: 10px; font-size: 0.85rem;">
-                                    Verifique sua caixa de entrada e spam. O link expira em 60 minutos.
-                                </p>
-                            </div>
-
-                            <div class="reset-steps">
-                                <h4><i class="fas fa-clock" style="color: var(--accent-yellow); margin-right: 8px;"></i>Próximos passos:</h4>
-                                <ol>
-                                    <li>Abra seu email e procure nossa mensagem</li>
-                                    <li>Clique no botão "Redefinir Senha"</li>
-                                    <li>Crie uma nova senha segura</li>
-                                    <li>Faça login com suas novas credenciais</li>
-                                </ol>
-                            </div>
-
-                            <button type="button" class="btn btn-reset" onclick="resendEmail()">
-                                <i class="fas fa-redo me-2"></i>
-                                Reenviar Email
-                            </button>
-                        </div>
+                        
 
                         <div class="back-to-login">
                             @if (Route::has('login'))
@@ -445,54 +470,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Form validation
-        document.getElementById('passwordResetForm').addEventListener('submit', function(e) {
-            const email = document.getElementById('email').value;
-            
-            if (!email) {
-                e.preventDefault();
-                alert('Por favor, digite seu email.');
-                return false;
-            }
-            
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                e.preventDefault();
-                alert('Por favor, insira um email válido.');
-                return false;
-            }
+       document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('passwordResetForm');
+            const Successmessage = document.getElementById('successMessage');
+            const Errormessage = document.getElementById('ErrorMessage');
+            const errorFeedBack = document.getElementById('errorFeedBack');
+            const submitBtn = this.querySelector('.btn-reset');
 
-            // Show success message (for demo purposes)
-            // In real implementation, this would be handled by Laravel
-            e.preventDefault();
-            showSuccessMessage(email);
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const email = document.getElementById('email').value;
+                    const response = await fetch('http://localhost/api/send-password-reset', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email })
+                    });
+
+                    const data = await response.json();
+                    console.log(data);
+
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Reenviar E-mail';  
+                    submitBtn.disabled = false;
+            
+                    if (data.status == false) {
+                        Errormessage.className = 'd-block';
+                        errorFeedBack.innerHTML = data.message;
+                        Successmessage.className = 'd-none';
+                    } else {
+                        Successmessage.className = 'd-block';
+                        Errormessage.className = 'd-none';
+                    }
+            });
         });
 
-        // Show success message
-        function showSuccessMessage(email) {
-            document.getElementById('resetForm').classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
-            document.getElementById('sentEmail').textContent = email;
-        }
 
-        // Resend email function
-        function resendEmail() {
-            const email = document.getElementById('email').value;
-            
-            // Add loading state
-            const resendBtn = document.querySelector('#successMessage .btn-reset');
-            const originalText = resendBtn.innerHTML;
-            resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Reenviando...';
-            resendBtn.disabled = true;
-            
-            // Simulate API call
-            setTimeout(() => {
-                alert('Email reenviado com sucesso!');
-                resendBtn.innerHTML = originalText;
-                resendBtn.disabled = false;
-            }, 2000);
-        }
 
         // Add loading state to reset button
         document.getElementById('passwordResetForm').addEventListener('submit', function() {
