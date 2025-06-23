@@ -70,4 +70,13 @@ class UrlService {
         
         return $stats;
     }
+
+    public function returnRateLimity($api_key)
+    {
+        $date = now()->toDateString();
+        $key = "rate_limit:{$api_key}:{$date}";
+
+        $remainingRequests = Redis::get($key);
+        return $remainingRequests;
+    }
 }

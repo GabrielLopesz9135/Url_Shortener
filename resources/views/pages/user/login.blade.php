@@ -383,7 +383,7 @@
                     <!-- Login Panel -->
                     <div class="login-panel">
                         <div class="brand-logo">
-                            <h1><i class="fas fa-link" style="color: var(--accent-green);"></i>  URLShort </h1>
+                            <h1><i class="fas fa-link" style="color: var(--accent-green);"></i><a style="text-decoration: none; color: var(--primary-dark-blue);" href="{{route('home')}}">URLShort</a></h1>
                             <p>Faça login em sua conta</p>
                         </div>
 

@@ -18,6 +18,9 @@ class UrlController extends Controller
 
     public function shortener(Request $request)
     {
+        $api_key = $request->attributes->get('authenticated_user')->api_key;
+        $RateLimitRemainingDay = $this->service->returnRateLimity($api_key);
+
         try {
             $request->validate([
                 'original_url' => 'required',
@@ -29,6 +32,7 @@ class UrlController extends Controller
                 'status' => 200,
                 'data' => ['short_url' => url("short/$shortCode")],
                 'message' => 'URL encurtada com sucesso',
+                'RateLimit-Remaining-Day' => $RateLimitRemainingDay,
             ]);
             
         } catch (\Exception $e) {
@@ -36,6 +40,7 @@ class UrlController extends Controller
                 'status' => 500,
                 'data' => ['short_url' => null],
                 'message' => 'Erro ao encurtar URL!',
+                'RateLimit-Remaining-Day' => $RateLimitRemainingDay,
             ])->setStatusCode(500);
         }
     }
@@ -60,8 +65,11 @@ class UrlController extends Controller
         return redirect()->away($originalUrl);
     }
 
-    public function stats($short_code)
+    public function stats(Request $request, $short_code)
     {
+        $api_key = $request->attributes->get('authenticated_user')->api_key;
+        $RateLimitRemainingDay = $this->service->returnRateLimity($api_key);
+
         $stats = $this->service->stats($short_code);
 
         if(!$stats) {
@@ -71,13 +79,17 @@ class UrlController extends Controller
                     'url' => null
                 ],
                 'message' => 'URL não encontrada',
+                'RateLimit-Remaining-Day' => $RateLimitRemainingDay,
             ], 404);
         }
 
         return response()->json([
             'status' => 200,
-            'data' => ['url' => $stats],
+            'data' => [
+                'url' => $stats
+            ],
             'message' => 'Estatísticas recuperadas com sucesso',
+            'RateLimit-Remaining-Day' => $RateLimitRemainingDay
         ], 200);
     }
 

@@ -6,6 +6,7 @@ use App\Repositories\PasswordRepositoryInterface;
 use App\Http\Controllers\EmailController;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redis;
+use Carbon\Carbon;
 
 
 class PasswordService {
@@ -36,8 +37,6 @@ class PasswordService {
             return $data = ['message' => 'Usuário não encontrado.','status' => false];
         }
 
-        return ['message' => 'teste','status' => true];
-
         $result = $this->emailController->passwordResetEmail($email);
         return $result;
     }
@@ -46,7 +45,7 @@ class PasswordService {
     {
         try {
             $decryptedToken = Crypt::decryptString($data['token']);
-            $decryptedExpireAt = Crypt::decryptString($data->query('expires_at'));
+            $decryptedExpireAt = Crypt::decryptString($data['expires_at']);
 
             if (Carbon::now()->greaterThan(Carbon::parse($decryptedExpireAt))) {
                 return $data = ['message' => 'Link expirado.','status' => false];
@@ -58,7 +57,7 @@ class PasswordService {
 
             $this->passwordRepository->updatePassword($data['email'], $data['password']);
 
-            return $data = ['message' => 'Email verificado com Sucesso.','status' => true];
+            return $data = ['message' => 'Senha alterada com sucesso','status' => true];
         } catch (DecryptException $e) {
             return $data = ['message' => 'Token inválido ou corrompido.','status' => false];
         }

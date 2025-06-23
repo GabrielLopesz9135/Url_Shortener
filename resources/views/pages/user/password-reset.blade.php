@@ -397,7 +397,7 @@
                                 <div class="success-message">
                                     <i class="fas fa-check-circle"></i>
                                     <h4>Email enviado com sucesso!</h4>
-                                    <p>Enviamos um link de recuperação para <span class="email-highlight" id="sentEmail"></span></p>
+                                    <p>Enviamos um link de recuperação</p>
                                     <p style="margin-top: 10px; font-size: 0.85rem;">
                                         Verifique sua caixa de entrada e spam. O link expira em 60 minutos.
                                     </p>

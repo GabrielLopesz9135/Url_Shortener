@@ -25,7 +25,6 @@ class PasswordController extends Controller
     
     public function sendEmail(Request $request)
     {
-        
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -40,7 +39,7 @@ class PasswordController extends Controller
         return view('pages.user.password-reset-form', ['request' => $request]);
     }
 
-    public function resetPassword(Request $request): RedirectResponse
+    public function resetPassword(Request $request)
     {
         $request->validate([
             'token' => ['required'],
@@ -49,7 +48,7 @@ class PasswordController extends Controller
         ]);
 
         $result = $this->service->resetPassword($request->all());
-        return $result;
+        return view('pages.user.password-reset-form', ['status' => $result['status'], 'message' => $result['message']]);
     }
     /**
      * Update the user's password.

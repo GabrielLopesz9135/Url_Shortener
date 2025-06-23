@@ -12,7 +12,7 @@ Route::prefix('/')->group(function (){
 
     Route::get('/api-docs', function () {
         return view('api-docs');
-    })->name('api_docs')->middleware('VerifyEmail');
+    })->name('api_docs');
 
     Route::get('/benchmark', function () {
         return view('benchmark');

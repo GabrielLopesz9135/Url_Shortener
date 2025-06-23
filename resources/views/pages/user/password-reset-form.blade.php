@@ -179,6 +179,15 @@
             text-align: center;
         }
 
+        .success-status {
+            background: rgba(56, 161, 105, 0.1);
+            border: 2px solid var(--accent-yellow);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
         .status-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
@@ -475,26 +484,98 @@
                     <!-- Reset Panel -->
                     <div class="reset-panel">
                         <div class="brand-logo">
-                            <h1><i class="fas fa-link" style="color: var(--accent-green);"></i> {{ config('app.name', 'LinkApp') }}</h1>
+                            <h1><i class="fas fa-link" style="color: var(--accent-green);"></i>URLShort</h1>
                             <p>Criar nova senha</p>
                         </div>
 
-                        <!-- Reset Status -->
+                       
+                        @php
+                            $status = $status ?? false;
+                        @endphp
+
+                         @if(!$status)
+
+                         <!-- Reset Status -->
                         <div class="reset-status">
                             <i class="fas fa-key status-icon"></i>
                             <h3 class="status-title">Redefinir Senha</h3>
                             <p class="status-message">Digite sua nova senha nos campos abaixo</p>
                         </div>
 
-                        @if (session('status'))
+                        <!-- Reset Form -->
+                            <form method="POST" action="{{ route('password.reset') }}" id="passwordResetForm">
+                                @csrf
+                                
+                                <input type="hidden" name="token" value="{{ $request['token'] ?? '' }}">
+                                <input type="hidden" name="email" value="{{ $request->email ?? old('email') }}">
+                                <input type="hidden" name="expires_at" value="{{ $request->expires_at ?? old('expires_at') }}">
+                                
+                                <div class="form-group">
+                                    <label for="password" class="form-label">Nova Senha</label>
+                                    <div class="input-group">
+                                        <input type="password" 
+                                            class="form-control @error('password') is-invalid @enderror" 
+                                            id="password" 
+                                            name="password" 
+                                            required 
+                                            autocomplete="new-password"
+                                            placeholder="Digite sua nova senha">
+                                        <span class="input-group-text" id="togglePassword">
+                                            <i class="fas fa-eye" id="eyeIcon"></i>
+                                        </span>
+                                    </div>
+                                    <div class="password-strength" id="passwordStrength"></div>
+                                    <div class="password-requirements">
+                                        <ul id="passwordRequirements">
+                                            <li id="req-length">Mínimo de 8 caracteres</li>
+                                            <li id="req-uppercase">Uma letra maiúscula</li>
+                                            <li id="req-lowercase">Uma letra minúscula</li>
+                                            <li id="req-number">Um número</li>
+                                            <li id="req-special">Um caractere especial</li>
+                                        </ul>
+                                    </div>
+                                    @error('password')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password_confirmation" class="form-label">Confirmar Nova Senha</label>
+                                    <div class="input-group">
+                                        <input type="password" 
+                                            class="form-control" 
+                                            id="password_confirmation" 
+                                            name="password_confirmation" 
+                                            required 
+                                            autocomplete="new-password"
+                                            placeholder="Confirme sua nova senha">
+                                        <span class="input-group-text" id="togglePasswordConfirm">
+                                            <i class="fas fa-eye" id="eyeIconConfirm"></i>
+                                        </span>
+                                    </div>
+                                    <div class="password-match" id="passwordMatch"></div>
+                                </div>
+
+                                <button type="submit" class="btn btn-reset">
+                                    <i class="fas fa-save me-2"></i>
+                                    Salvar Nova Senha
+                                </button>
+                            </form>
+                            
+                        @elseif($status == true)
                             <div class="success-message">
-                                <i class="fas fa-check-circle"></i>
-                                <h4>Sucesso!</h4>
-                                <p>{{ session('status') }}</p>
+                                <i class="fas fa-key status-icon"></i>
+                                <h3 class="status-title">Senha Redefinida com Sucesso</h3>
+                                <a href="{{ route('login') }}" class="btn">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                    Ir para Página de Login
+                                </a>
                             </div>
                         @endif
 
-                        @if ($errors->any())
+<!--                         @if ($errors->any())
                             <div class="error-message">
                                 <strong>Erro:</strong>
                                 <ul style="margin: 8px 0 0 0; padding-left: 20px;">
@@ -503,68 +584,7 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        @endif
-
-                        <!-- Reset Form -->
-                        <form method="POST" action="{{ route('password.reset') }}" id="passwordResetForm">
-                            @csrf
-                            
-                            <input type="hidden" name="token" value="{{ $request['token'] ?? '' }}">
-                            <input type="hidden" name="email" value="{{ $request->email ?? old('email') }}">
-                            
-                            <div class="form-group">
-                                <label for="password" class="form-label">Nova Senha</label>
-                                <div class="input-group">
-                                    <input type="password" 
-                                           class="form-control @error('password') is-invalid @enderror" 
-                                           id="password" 
-                                           name="password" 
-                                           required 
-                                           autocomplete="new-password"
-                                           placeholder="Digite sua nova senha">
-                                    <span class="input-group-text" id="togglePassword">
-                                        <i class="fas fa-eye" id="eyeIcon"></i>
-                                    </span>
-                                </div>
-                                <div class="password-strength" id="passwordStrength"></div>
-                                <div class="password-requirements">
-                                    <ul id="passwordRequirements">
-                                        <li id="req-length">Mínimo de 8 caracteres</li>
-                                        <li id="req-uppercase">Uma letra maiúscula</li>
-                                        <li id="req-lowercase">Uma letra minúscula</li>
-                                        <li id="req-number">Um número</li>
-                                        <li id="req-special">Um caractere especial</li>
-                                    </ul>
-                                </div>
-                                @error('password')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password_confirmation" class="form-label">Confirmar Nova Senha</label>
-                                <div class="input-group">
-                                    <input type="password" 
-                                           class="form-control" 
-                                           id="password_confirmation" 
-                                           name="password_confirmation" 
-                                           required 
-                                           autocomplete="new-password"
-                                           placeholder="Confirme sua nova senha">
-                                    <span class="input-group-text" id="togglePasswordConfirm">
-                                        <i class="fas fa-eye" id="eyeIconConfirm"></i>
-                                    </span>
-                                </div>
-                                <div class="password-match" id="passwordMatch"></div>
-                            </div>
-
-                            <button type="submit" class="btn btn-reset">
-                                <i class="fas fa-save me-2"></i>
-                                Salvar Nova Senha
-                            </button>
-                        </form>
+                        @endif -->
 
                         <!-- Security Tips -->
                         <div class="security-tips">
@@ -617,49 +637,6 @@
         setupPasswordToggle('togglePassword', 'password', 'eyeIcon');
         setupPasswordToggle('togglePasswordConfirm', 'password_confirmation', 'eyeIconConfirm');
 
-        /* // Password strength checker
-        document.getElementById('password').addEventListener('input', function() {
-            const password = this.value;
-            const strengthDiv = document.getElementById('passwordStrength');
-            const requirements = {
-                length: password.length >= 8,
-                uppercase: /[A-Z]/.test(password),
-                lowercase: /[a-z]/.test(password),
-                number: /\d/.test(password),
-                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
-            };
-
-            // Update requirements visual feedback
-            Object.keys(requirements).forEach(req => {
-                const element = document.getElementById(`req-${req}`);
-                if (requirements[req]) {
-                    element.classList.add('requirement-met');
-                } else {
-                    element.classList.remove('requirement-met');
-                }
-            });
-
-            // Calculate strength
-            const metRequirements = Object.values(requirements).filter(Boolean).length;
-            let strengthText = '';
-            let strengthClass = '';
-
-            if (password.length === 0) {
-                strengthText = '';
-            } else if (metRequirements < 3) {
-                strengthText = 'Senha fraca';
-                strengthClass = 'strength-weak';
-            } else if (metRequirements < 5) {
-                strengthText = 'Senha média';
-                strengthClass = 'strength-medium';
-            } else {
-                strengthText = 'Senha forte';
-                strengthClass = 'strength-strong';
-            }
-
-            strengthDiv.textContent = strengthText;
-            strengthDiv.className = `password-strength ${strengthClass}`;
-        }); */
 
         // Password confirmation checker
         document.getElementById('password_confirmation').addEventListener('input', function() {
