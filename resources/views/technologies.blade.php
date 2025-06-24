@@ -475,9 +475,7 @@
                         </p>
                         <ul class="tech-features">
                             <li>Eloquent ORM para interações com banco de dados</li>
-                            <li>Sistema de roteamento avançado</li>
                             <li>Middleware para autenticação e segurança</li>
-                            <li>Artisan CLI para automação de tarefas</li>
                             <li>Sistema de cache integrado</li>
                             <li>Validação de dados robusta</li>
                         </ul>
@@ -498,7 +496,6 @@
                         <ul class="tech-features">
                             <li>Ambientes isolados e reproduzíveis</li>
                             <li>Deploy simplificado e consistente</li>
-                            <li>Escalabilidade horizontal automática</li>
                             <li>Orquestração com Docker Compose</li>
                             <li>Otimização de recursos do servidor</li>
                             <li>Rollback rápido em caso de problemas</li>
@@ -520,8 +517,6 @@
                         <ul class="tech-features">
                             <li>Esquema flexível para diferentes tipos de dados</li>
                             <li>Consultas rápidas com indexação avançada</li>
-                            <li>Agregações complexas para analytics</li>
-                            <li>Replicação automática para alta disponibilidade</li>
                             <li>Sharding para escalabilidade horizontal</li>
                             <li>Suporte nativo a dados geoespaciais</li>
                         </ul>
@@ -540,10 +535,9 @@
                             e gerencia sessões para uma experiência de usuário otimizada.
                         </p>
                         <ul class="tech-features">
-                            <li>Cache de URLs mais acessadas</li>
+                            <li>Cache de URLs</li>
                             <li>Gerenciamento de sessões de usuário</li>
                             <li>Rate limiting para proteção da API</li>
-                            <li>Pub/Sub para comunicação em tempo real</li>
                             <li>Estruturas de dados avançadas</li>
                             <li>Persistência configurável</li>
                         </ul>
@@ -626,10 +620,9 @@
                     <ul class="list-group">
                         <li class="list-group-item">Rate limiting com Redis</li>
                         <li class="list-group-item">Validação de URLs maliciosas</li>
-                        <li class="list-group-item">Cache inteligente para URLs populares</li>
+                        <li class="list-group-item">Cache inteligente para URLs</li>
                         <li class="list-group-item">Monitoramento em tempo real</li>
                         <li class="list-group-item">Backup automático de dados</li>
-                        <li class="list-group-item">SSL/TLS em todas as conexões</li>
                     </ul>
                 </div>
             </div>
@@ -647,7 +640,7 @@
             <div class="row">
                 <div class="col-md-3 mb-4">
                     <div class="stat-card">
-                        <div class="stat-number" data-target="50">0</div>
+                        <div class="stat-number" data-target="100">0</div>
                         <div class="stat-label">ms</div>
                         <p class="mt-2">Tempo médio de resposta</p>
                     </div>

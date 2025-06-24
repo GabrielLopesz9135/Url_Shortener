@@ -8,6 +8,8 @@ use App\Repositories\VerifyEmailRepositoryInterface;
 use App\Repositories\VerifyEmailRepositoryEloquent;
 use App\Repositories\PasswordRepositoryInterface;
 use App\Repositories\PasswordRepositoryEloquent;
+use App\Repositories\PublicUrlRepositoryInterface;
+use App\Repositories\PublicUrlRepositoryEloquent;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             PasswordRepositoryInterface::class,
             PasswordRepositoryEloquent::class
+        );
+        $this->app->bind(
+            PublicUrlRepositoryInterface::class,
+            PublicUrlRepositoryEloquent::class
         );
     }
 

@@ -325,7 +325,9 @@
                 <h3><i class="fas fa-scissors"></i> Encurtar Link</h3>
                 <p>Cole sua URL longa aqui e obtenha um link curto instantaneamente</p>
                 
-                <form id="shortenForm">
+                <form id="shortenForm" action="{{route('urls.shortener')}}" method="POST" >
+                    @csrf
+                    @method('POST')
                     <div class="url-input-group">
                         <input type="url" 
                                class="form-control url-input" 
@@ -418,45 +420,29 @@
         </div>
     </footer>
 
+    @php
+        $status = $status ?? false;
+        $data['short_url'] = $data['short_url'] ?? null; 
+    @endphp
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let shortenedUrlData = null;
+        const status = "{{ $status }}";
 
         // Form submission handler
-        document.getElementById('shortenForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
             
-            const longUrl = document.getElementById('longUrl').value;
-            const submitBtn = document.querySelector('.shorten-btn');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const spinner = submitBtn.querySelector('.loading-spinner');
-            
-            // Show loading state
-            btnText.style.display = 'none';
-            spinner.style.display = 'inline-block';
-            submitBtn.disabled = true;
+            const status = "{{ session('status') }}";
+            const shortUrl = "{{ session('data.short_url') }}";
+
+            console.log(status, shortUrl);
             
             // Clear previous results
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('alertSection').innerHTML = '';
-            
-            try {
-                 const response = await fetch('http://localhost/api/url', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer 94b92fd7864bb3adf6213d2a4e09602412d3e34e8dd1a52c5df302b6e144029c',
-                    },
-                    body: JSON.stringify({
-                        original_url: longUrl
-                    })
-                });
 
-                const json = await response.json();
-
-                if (response.ok && json.status === 200) {
-                    const shortUrl = json.data.short_url;
+                if (status == "Success") {
 
                     const result = {
                         success: true,
@@ -464,7 +450,6 @@
                     };
 
                     shortenedUrlData = result;
-                    console.log(shortenedUrlData.shortUrl);
 
                     document.getElementById('shortenedUrl').textContent = shortUrl;
                     document.getElementById('resultSection').style.display = 'block';
@@ -474,19 +459,9 @@
                         behavior: 'smooth', 
                         block: 'center' 
                     });
-                }else {
+                }if(status == "Error") {
                     showAlert('Erro ao encurtar URL. Tente novamente em Alguns Instantes.', 'danger');
                 }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('Erro de conexão. Verifique sua internet e tente novamente.', 'danger');
-            } finally {
-                // Reset button state
-                btnText.style.display = 'inline';
-                spinner.style.display = 'none';
-                submitBtn.disabled = false;
-            }
         });
 
         // Copy to clipboard function

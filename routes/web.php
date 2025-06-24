@@ -3,10 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
-use App\Http\Controllers\UrlController;
+use App\Http\Controllers\PublicUrlController;
 
 Route::prefix('/')->group(function (){
-    Route::get('/urls', function () {
+    Route::get('/', function () {
         return view('pages.urls.home');
     })->name('home');
 
@@ -22,12 +22,17 @@ Route::prefix('/')->group(function (){
         return view('technologies');
     })->name('technologies');
 
-    Route::get('/', function () {
-        return view('pages.urls.home');
-    });
+    Route::get('/clicks', function () {
+        return view('pages.urls.click-counter');
+    })->name('url.clicks');
 });
 
-Route::get('short/{shortCode}', [UrlController::class, 'redirect'])->name('urls.redirect');
+Route::prefix('/url')->group(function (){
+    Route::post('/', [PublicUrlController::class, 'shortener'])->name('urls.shortener');
+    Route::get('/{shortCode}', [PublicUrlController::class, 'redirect'])->name('urls.redirect');
+    Route::post('/stats', [PublicUrlController::class, 'stats'])->name('urls.stats');
+});
+
 
 
 Route::middleware('auth')->group(function () {

@@ -430,7 +430,7 @@
     </section>
 
     <!-- Coming Soon Section -->
-    <section class="coming-soon-section">
+    <!-- <section class="coming-soon-section">
         <div class="container">
             <div class="coming-soon-icon pulse-animation">
                 <i class="fas fa-rocket"></i>
@@ -442,10 +442,95 @@
                 nossa solução se destaca em velocidade, confiabilidade e eficiência.
             </p>
         </div>
-    </section>
+    </section> -->
+
+    <h3 class="section-title mt-5 mb-3">Resumo dos Testes</h3>
+    <ul class="text-center">
+        <strong>Ferramenta:</strong> Apache Benchmark <br>
+        <strong>Requisições:</strong> 5000 requisições com 100 concorrentes <br>
+        <strong>Ambiente:</strong> Containers Docker (App, MongoDB, Redis, NGINX)
+    </ul>
+
+    <h3 class="section-title mt-5 mb-3">Comparativo Técnico</h3>
+    <div class="table-responsive p-3">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Métrica</th>
+                    <th>MongoDB Direto</th>
+                    <th>Redis + Flush 5s</th>
+                    <th>Observações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CPU - App</td>
+                    <td>~500%</td>
+                    <td>~500%</td>
+                    <td>Alta carga de CPU em ambos</td>
+                </tr>
+                <tr>
+                    <td>Memória - App</td>
+                    <td>90MB</td>
+                    <td class="highlight">250MB</td>
+                    <td style="background: var(--danger-color);">Redis aumenta uso de memória</td>
+                </tr>
+                <tr>
+                    <td>Disk I/O - App</td>
+                    <td>30MB / 0MB</td>
+                    <td>30MB / 0MB</td>
+                    <td>Sem mudanças significativas</td>
+                </tr>
+                <tr>
+                    <td>Network I/O - App</td>
+                    <td>15MB / 11MB</td>
+                    <td>15MB / 11MB</td>
+                    <td>Sem mudanças significativas</td>
+                </tr>
+                <tr>
+                    <td>CPU - Mongo</td>
+                    <td class="highlight">~5%</td>
+                    <td>0.2–0.7%</td>
+                    <td style="background: var(--success-color);">Grande alívio na carga do banco</td>
+                </tr>
+                <tr>
+                    <td>Network I/O - Mongo</td>
+                    <td class="highlight">2.4MB / 500KB</td>
+                    <td>60KB / 80KB</td>
+                    <td style="background: var(--success-color);">Tráfego reduzido em >90%</td>
+                </tr>
+                <tr>
+                    <td>CPU - Redis</td>
+                    <td>5%</td>
+                    <td>5%</td>
+                    <td>Sem impacto significativo</td>
+                </tr>
+                <tr>
+                    <td>Memória - Redis</td>
+                    <td>&lt;10MB</td>
+                    <td>&lt;10MB</td>
+                    <td>Uso leve</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="section-title mt-5 mb-3">Conclusões</h3>
+    <ul class="text-center mb-5">
+        <strong>✔️ Escalabilidade:</strong> Redis permite lidar com mais requisições sem sobrecarregar o banco. <br>
+        <strong>✔️ Desempenho:</strong> Redução drástica na carga do MongoDB e no tráfego de rede. <br>
+        <strong>⚠️ Consistência:</strong> Existe uma latência de até 5s na persistência final dos dados. <br>
+        <strong>⚠️ Perda de Dados:</strong> Risco de perda caso a aplicação pare antes da sincronização.
+    </ul>
+<!-- 
+    <div class="p-3">
+    <h3 class="section-title mt-5 mb-3">Recomendações</h3>
+        <p>Para ambientes de alta escala, a abordagem com Redis se mostra mais eficiente. Recomendado aplicar estratégias de persistência segura (como Redis AOF ou flush com fallback) para mitigar perdas.</p>
+    </div> -->
+    
 
     <!-- Features Preview -->
-    <section class="features-preview">
+    <!-- <section class="features-preview">
         <div class="container">
             <h2 class="section-title">O que Você Encontrará Aqui</h2>
             <p class="section-subtitle">
@@ -493,7 +578,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Progress Section -->
     <section class="progress-section">
@@ -532,7 +617,7 @@
                             </div>
                         </div>
                         
-                        <div class="progress-item">
+                        <!-- <div class="progress-item">
                             <div class="progress-icon pending">
                                 <i class="fas fa-clock"></i>
                             </div>
@@ -550,165 +635,16 @@
                                 <h6>Interface de Benchmark</h6>
                                 <p>Desenvolvimento da interface para visualização dos resultados</p>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
     </section>
+ 
 
-    <!-- Notification Section -->
-    <section class="notification-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="notification-card">
-                        <h3><i class="fas fa-bell"></i> Seja Notificado</h3>
-                        <p>
-                            Quer ser o primeiro a ver nossos resultados de benchmark? 
-                            Deixe seu email e te avisaremos quando estiver pronto!
-                        </p>
-                        
-                        <form class="notification-form" id="notificationForm">
-                            <div class="input-group">
-                                <input type="email" 
-                                       class="form-control notification-input" 
-                                       placeholder="seu@email.com"
-                                       required>
-                                <button class="btn notification-btn" type="submit">
-                                    <i class="fas fa-paper-plane"></i> Notificar-me
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <div id="notificationResult" class="mt-3" style="display: none;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Notification form handler
-        document.getElementById('notificationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = this.querySelector('input[type="email"]').value;
-            const resultDiv = document.getElementById('notificationResult');
-            const submitBtn = this.querySelector('button[type="submit"]');
-            
-            // Show loading state
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            submitBtn.disabled = true;
-            
-            // Simulate API call
-            setTimeout(() => {
-                resultDiv.innerHTML = `
-                    <div class="alert alert-success" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.3); color: white;">
-                        <i class="fas fa-check-circle"></i> 
-                        Perfeito! Você será notificado em <strong>${email}</strong> quando os benchmarks estiverem prontos.
-                    </div>
-                `;
-                resultDiv.style.display = 'block';
-                
-                // Reset form
-                this.reset();
-                
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
-        });
-
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.2,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Animate feature cards
-                    const featureCards = entry.target.querySelectorAll('.feature-card');
-                    featureCards.forEach((card, index) => {
-                        setTimeout(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        }, index * 200);
-                    });
-                    
-                    // Animate progress items
-                    const progressItems = entry.target.querySelectorAll('.progress-item');
-                    progressItems.forEach((item, index) => {
-                        setTimeout(() => {
-                            item.style.opacity = '1';
-                            item.style.transform = 'translateX(0)';
-                        }, index * 150);
-                    });
-                }
-            });
-        }, observerOptions);
-
-        // Setup animations on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('.features-preview, .progress-section');
-            sections.forEach(section => observer.observe(section));
-            
-            // Initial setup for animated elements
-            const featureCards = document.querySelectorAll('.feature-card');
-            featureCards.forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            });
-            
-            const progressItems = document.querySelectorAll('.progress-item');
-            progressItems.forEach(item => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateX(-30px)';
-                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            });
-        });
-
-        // Parallax effect for floating elements
-        window.addEventListener('scroll', function() {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelectorAll('.floating-element');
-            
-            parallax.forEach((element, index) => {
-                const speed = 0.3 + (index * 0.1);
-                element.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.05}deg)`;
-            });
-        });
-
-        // Add some interactive effects
-        document.querySelectorAll('.progress-item').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateX(10px)';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateX(0)';
-            });
-        });
-    </script>
 </body>
 </html>
 

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
 use App\Models\Url;
 use App\Services\UrlService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use App\Http\Controllers\Controller as Controller;
 
 class UrlController extends Controller
 {
@@ -30,7 +31,7 @@ class UrlController extends Controller
 
             return response()->json([
                 'status' => 200,
-                'data' => ['short_url' => url("short/$shortCode")],
+                'data' => ['short_url' => url("url/$shortCode")],
                 'message' => 'URL encurtada com sucesso',
                 'RateLimit-Remaining-Day' => $RateLimitRemainingDay,
             ]);

@@ -4,8 +4,10 @@ namespace App\Repositories;
 
 use App\Models\Url;
 
-interface UrlRepositoryInterface
+interface PublicUrlRepositoryInterface
+
 {
+
     public function __construct(Url $data);
 
         public function shortener($data);
