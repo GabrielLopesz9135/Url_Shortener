@@ -27,6 +27,10 @@ Route::prefix('/')->group(function (){
     })->name('url.clicks');
 });
 
+Route::get('/404', function(){
+    return view('short-link-404');
+});
+
 Route::prefix('/url')->group(function (){
     Route::post('/', [PublicUrlController::class, 'shortener'])->name('urls.shortener');
     Route::get('/{shortCode}', [PublicUrlController::class, 'redirect'])->name('urls.redirect');

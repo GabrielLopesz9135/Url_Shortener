@@ -46,13 +46,7 @@ class PublicUrlController extends Controller
     {
         $originalUrl = $this->service->redirect($short_code);
         if(!$originalUrl) {
-            return response()->json([
-                'status' => 404,
-                'data' => [
-                    'url' => null
-                ],
-                'message' => 'URL não encontrada',
-            ], 404);
+            return view('short-link-404');
         }
 
         if (!preg_match('#^https?://#', $originalUrl)) {

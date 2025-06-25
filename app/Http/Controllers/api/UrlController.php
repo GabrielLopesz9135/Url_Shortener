@@ -46,7 +46,7 @@ class UrlController extends Controller
         }
     }
 
-    public function redirect($short_code)
+    /* public function redirect($short_code)
     {
         $originalUrl = $this->service->redirect($short_code);
         if(!$originalUrl) {
@@ -64,7 +64,7 @@ class UrlController extends Controller
         }
         
         return redirect()->away($originalUrl);
-    }
+    } */
 
     public function stats(Request $request, $short_code)
     {

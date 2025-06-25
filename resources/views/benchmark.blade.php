@@ -363,6 +363,9 @@
                         <a class="nav-link" href="{{route('home')}}">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{route('url.clicks')}}">Estatísticas de Click</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{route('api_docs')}}">API</a>
                     </li>
                     <li class="nav-item">
