@@ -54,23 +54,73 @@ Essa separação permite manter regras de negócio nos serviços, persistência 
 - Sanitização de redirect: o serviço adiciona `http://` quando necessário para evitar redirects malformados.
 
 ## Como rodar (resumo rápido)
-1. Copie `.env.example` para `.env` e configure conexões `mongodb`, `redis` e `queue`.
-2. Instale dependências:
+1. Este projeto é executado via Docker Compose (serviços: `application`, `nginx`, `mongodb`, `redis`).
+
+2. Copie `.env.example` para `.env` e ajuste as variáveis necessárias (MongoDB, Redis, APP_URL, APP_KEY, QUEUE_CONNECTION). Exemplo mínimo:
 
 ```bash
-composer install
-npm install && npm run build
+cp .env.example .env
+# Edite .env para apontar mongodb://mongodb:27017 e redis://redis:6379
 ```
 
-3. Rode seeders (opcional): `php artisan db:seed`
-4. Inicie o servidor e workers:
+3. Build e subir containers (modo detached):
 
 ```bash
-php artisan serve
-php artisan queue:work --queue=default
+docker compose up --build -d
 ```
 
-5. Agende `SyncUrlClicks` via `schedule` ou crie um cron que rode `php artisan schedule:run` a cada minuto.
+4. Instale dependências, gere `APP_KEY` e compile assets dentro do container `application` (os comandos usam `docker compose exec`):
+
+```bash
+docker compose exec application composer install --no-interaction --prefer-dist
+docker compose exec application php artisan key:generate
+docker compose exec application npm install
+docker compose exec application npm run build
+```
+
+5. (Opcional) Seeders e tarefas de preparação de banco:
+
+```bash
+docker compose exec application php artisan db:seed
+```
+
+6. Executores recomendados para produção/local com containers:
+
+- Queue worker (rodar em background / processo separado):
+
+```bash
+docker compose exec -d application php artisan queue:work --sleep=3 --tries=3
+```
+
+- Scheduler (opções):
+	- Usar `php artisan schedule:work` em um processo separado dentro do container, ou
+	- Agendar `php artisan schedule:run` via cron no host que executa `docker compose exec application php artisan schedule:run` a cada minuto.
+
+```bash
+# Exemplo (modo contínuo)
+docker compose exec -d application php artisan schedule:work
+```
+
+7. Acesse a aplicação via navegador em `http://localhost` (Nginx expõe a porta 80). O PHP-FPM interno fica em `application:9000` conforme `docker-compose.yml`.
+
+8. Logs e gerenciamento:
+
+```bash
+# Ver logs dos containers
+docker compose logs -f nginx
+docker compose logs -f application
+
+# Parar e remover containers (mantém volume do MongoDB salvo):
+docker compose down
+
+# Remover volumes (ex.: limpar dados do MongoDB)
+docker compose down -v
+```
+
+Notas:
+- O volume `mongo-data` persiste os dados do MongoDB (`docker-compose.yml`).
+- Como o diretório do projeto é montado como volume em `/var/www`, comandos como `composer install` e `npm run build` alteram os arquivos do host.
+- Em produção, recomenda-se separar responsabilidades (containers específicos para workers/cron), configurar variáveis de ambiente seguras e usar um orquestrador (Docker Swarm / Kubernetes) ou serviços gerenciados para Redis/MongoDB.
 
 ## Arquivos de referência
 - Eventos: [app/Events/UrlVisited.php](app/Events/UrlVisited.php)
