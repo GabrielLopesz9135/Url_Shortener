@@ -5,6 +5,30 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PublicUrlController;
 
+/**
+ * API - Documentação rápida das rotas expostas (implementação futura em /api)
+ *
+ * POST /url
+ * - Descrição: Encurta uma URL.
+ * - Headers (API): Authorization: Bearer <API_KEY>, Content-Type: application/json
+ * - Body (JSON): { "original_url": "https://exemplo.com" }
+ * - Response (200): { status:200, data: { short_url: "https://HOST/url/<shortCode>" }, message: string }
+ * - Erros: 400 validação, 429 rate-limit, 500 erro interno
+ *
+ * GET /url/{shortCode}
+ * - Descrição: Redireciona (302) para a URL original associada ao shortCode.
+ * - Auth: pública (não requer API key)
+ *
+ * POST /url/stats
+ * - Descrição: Recupera estatísticas para um short code (web form envia uma URL completa).
+ * - Body (web): { "url": "https://HOST/url/<shortCode>" }
+ * - Response (200): { status:200, data: { url: { original_url, short_code, clicks, created_at, expire_at } }, message }
+ *
+ * Observações para a API real (/api):
+ * - Recomenda-se prefixar rotas com /api e aplicar middleware `ValidateApiHeaders` e `RateLimitByPlan`.
+ * - Cache/contadores: Redis usado para cache de URL e chaves `clicks:{short_code}`. O job `SyncUrlClicks` consolida no MongoDB.
+ */
+
 Route::prefix('/')->group(function (){
     Route::get('/', function () {
         return view('pages.urls.home');
